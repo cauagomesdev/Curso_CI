@@ -1,0 +1,7 @@
+# Pasta de dados do Postgres (não versionar)
+postgres-data/
+
+# Binários gerados pelo go build
+main
+main.exe
+*.exe
