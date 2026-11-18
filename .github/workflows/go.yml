@@ -2,17 +2,19 @@ name: Go
 
 on:
   push:
-    branches: [ Aula_1 ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ Aula_1 ]
+    branches: [ '*' ]
 
 jobs:
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         go_version: ['1.18', '1.17', '>=1.18']
+        os: ['ubuntu-latest', 'ubuntu-22.04']
+
     steps:
     - uses: actions/checkout@v4
 
@@ -26,6 +28,9 @@ jobs:
       
     - name: Create-DB
       run: docker compose up -d
+      
+    - name: Wait-DB
+      run: timeout 60 bash -c 'until docker compose exec -T postgres pg_isready -U root; do sleep 1; done'
 
     - name: Test
       run: go test -v main_test.go 
